@@ -50,6 +50,10 @@ body {
   background-color: red;
 }
 
+.grid div.invaderAlt {
+ background-color: darksalmon;
+}
+
 .grid div.hitInvader {
   background-color: none;
 }

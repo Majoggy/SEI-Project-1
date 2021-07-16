@@ -15,9 +15,11 @@ const invaderClass = 'invader'
 const playerPClass = 'playerP'
 const invaderPClass = 'invaderP'
 const hitInvaderClass = 'hitInvader'
+const altInvaderClass = 'invaderAlt'
 
 // * Game Variables
 
+let speedUpcount = 850
 let score = 0
 let invaderDirection = 1
 const playerStartingPosition = 217
@@ -26,6 +28,7 @@ let invaderArray = [3,4,5,6,7,8,9,10,11,18,
   19,20,21,22,23,24,25,26,33,34,35,36,37,
   38,39,40,41,48,49,50,51,52,53,54,55,56,
   63,64,65,66,67,68,69,70,71]
+let invaderAltArray = [ 3,4,5,6,7,8,9,10,11,18,19,20,21,22,23,24,25,26 ]
 let deadInvaderArray = []
 const playerIndex = playerPosition % gridWidth
 
@@ -81,14 +84,14 @@ function playerShoot() {
     {
       cells[position].classList.remove(invaderClass)
       cells[position].classList.add(hitInvaderClass)
-      // invaderArray = invaderArray.filter(index => index !== position)
       const deadAlien = invaderArray.indexOf(position)
       deadInvaderArray.push(deadAlien)
       cells[position].classList.remove(playerPClass)
       clearInterval(projectileSpeed)
+      speedUpcount -= 12
       score += 1
-
-      console.log(score)
+      console.log(speedUpcount)
+      speedUp(speedUpcount)
     }
   }
 }
@@ -107,16 +110,22 @@ function removePlayer(position) {
 
 function addInvaders() {
   for (let i = 0; i < invaderArray.length; i ++) {
-    // if (!cells[invaderArray[i]].classList.contains(hitInvaderClass)) {
-      if (!deadInvaderArray.includes(i)) {
-      cells[invaderArray[i]].classList.add(invaderClass)
+  
+    if (!deadInvaderArray.includes(i)) {
+      if (invaderAltArray[i] == invaderArray[i]) {
+        cells[invaderArray[i]].classList.add(altInvaderClass)
       }
-    // }
+      cells[invaderArray[i]].classList.add(invaderClass)
+    }
+    
   }
 }
 
 function removeInvaders() {
   for (let i = 0; i < invaderArray.length; i ++) {
+    if (invaderAltArray[i] == invaderArray[i]) {
+      cells[invaderArray[i]].classList.remove(altInvaderClass)
+    }
     cells[invaderArray[i]].classList.remove(invaderClass)
   }
 }
@@ -131,22 +140,40 @@ function movingInvaders() {
 
   if (gridRight && invaderDirection === 1) {
     invaderArray = invaderArray.map(invader => invader + gridWidth + 1)
+    invaderAltArray = invaderAltArray.map(invader => invader + gridWidth + 1)
     invaderDirection = -1
   }
 
   if (gridLeft && invaderDirection === -1) {
     invaderArray = invaderArray.map(invader => invader + gridWidth -1)
+    invaderAltArray = invaderAltArray.map(invader => invader + gridWidth -1)
     invaderDirection = 1
   }
 
   invaderArray = invaderArray.map(invader => invader + invaderDirection)
+  invaderAltArray = invaderAltArray.map(invader => invader + invaderDirection)
 
   addInvaders()
+
+  if (invaderArray.length === deadInvaderArray.length) {
+    console.log('YOU WIN')
+    clearInterval(invaderSpeed)
+  }
 }
 
-const invaderSpeed = setInterval(() => {
+
+
+let invaderSpeed = setInterval(() => {
   movingInvaders()
-}, 500)
+}, speedUpcount)
+
+function speedUp(num) {
+  clearInterval(invaderSpeed)
+  console.log('why')
+  invaderSpeed = setInterval(() => {
+    movingInvaders()
+  }, num)
+}
 
 // * Event Listeners
 
