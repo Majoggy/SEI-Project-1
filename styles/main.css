@@ -50,6 +50,10 @@ body {
   background-color: red;
 }
 
+.grid div.hitInvader {
+  background-color: none;
+}
+
 .grid div.playerP {
   background-color: yellow;
 }

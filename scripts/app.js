@@ -14,6 +14,7 @@ const playerClass = 'player'
 const invaderClass = 'invader'
 const playerPClass = 'playerP'
 const invaderPClass = 'invaderP'
+const hitInvaderClass = 'hitInvader'
 
 // * Game Variables
 
@@ -25,6 +26,7 @@ let invaderArray = [3,4,5,6,7,8,9,10,11,18,
   19,20,21,22,23,24,25,26,33,34,35,36,37,
   38,39,40,41,48,49,50,51,52,53,54,55,56,
   63,64,65,66,67,68,69,70,71]
+let deadInvaderArray = []
 const playerIndex = playerPosition % gridWidth
 
 // * Generate Grid
@@ -68,24 +70,30 @@ function playerShoot() {
     cells[position].classList.remove(playerPClass)
     if (position <= 14) {
       clearInterval(projectileSpeed)
-      console.log(position)
       return
     }
     position -= gridWidth
     cells[position].classList.add(playerPClass)
     playerhit(position)
   }  
-}
+  function playerhit(position) {
+    if (cells[position].classList.contains(invaderClass))
+    {
+      cells[position].classList.remove(invaderClass)
+      cells[position].classList.add(hitInvaderClass)
+      // invaderArray = invaderArray.filter(index => index !== position)
+      const deadAlien = invaderArray.indexOf(position)
+      deadInvaderArray.push(deadAlien)
+      cells[position].classList.remove(playerPClass)
+      clearInterval(projectileSpeed)
+      score += 1
 
-function playerhit(position) {
-  if (cells[position].classList.contains(invaderClass))
-  {
-    cells[position].classList.remove(invaderClass)
-    invaderArray = invaderArray.filter(index => index !== position)
-    score += 1
-    console.log(score)
+      console.log(score)
+    }
   }
 }
+
+
 
 
 
@@ -99,7 +107,11 @@ function removePlayer(position) {
 
 function addInvaders() {
   for (let i = 0; i < invaderArray.length; i ++) {
-    cells[invaderArray[i]].classList.add(invaderClass)
+    // if (!cells[invaderArray[i]].classList.contains(hitInvaderClass)) {
+      if (!deadInvaderArray.includes(i)) {
+      cells[invaderArray[i]].classList.add(invaderClass)
+      }
+    // }
   }
 }
 
