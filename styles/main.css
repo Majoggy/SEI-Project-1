@@ -40,12 +40,22 @@ body {
   width: 44px;
 }
 
+/* Classes for 'sprites' */
+
 .grid div.player {
   background-color: green;
 }
 
-grid div.invader {
+.grid div.invader {
   background-color: red;
+}
+
+.grid div.playerP {
+  background-color: yellow;
+}
+
+.grid div.InvaderP {
+  background-color: darkred;
 }
 
 /* CRT scanline effect */
