@@ -17,7 +17,7 @@ const invaderPClass = 'invaderP'
 
 // * Game Variables
 
-
+let score = 0
 let invaderDirection = 1
 const playerStartingPosition = 217
 let playerPosition = playerStartingPosition
@@ -60,26 +60,31 @@ function handleKeyUp(event) {
 
 function playerShoot() {
   console.log("FIRE!")
-  let pPath = playerPosition - gridWidth
-  cells[pPath].classList.add(playerPClass) 
+  let position = playerPosition - gridWidth
+  cells[position].classList.add(playerPClass) 
   const projectileSpeed = setInterval(shootProjectile,200)
   
   function shootProjectile() {
-    cells[pPath].classList.remove(playerPClass)
-    if (pPath <= 14) {
+    cells[position].classList.remove(playerPClass)
+    if (position <= 14) {
       clearInterval(projectileSpeed)
-      console.log(pPath)
+      console.log(position)
       return
     }
-    pPath -= gridWidth
-    cells[pPath].classList.add(playerPClass)
-// Initial hit detection
-    if (cells[pPath].classList.contains(invaderClass))
-    {
-      console.log('A HIT!')
-    }
-
+    position -= gridWidth
+    cells[position].classList.add(playerPClass)
+    playerhit(position)
   }  
+}
+
+function playerhit(position) {
+  if (cells[position].classList.contains(invaderClass))
+  {
+    cells[position].classList.remove(invaderClass)
+    invaderArray = invaderArray.filter(index => index !== position)
+    score += 1
+    console.log(score)
+  }
 }
 
 
