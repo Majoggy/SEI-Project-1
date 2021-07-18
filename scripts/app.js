@@ -13,13 +13,13 @@ const cellCount = gridWidth * gridWidth
 const playerClass = 'player'
 const invaderClass = 'invader'
 const playerPClass = 'playerP'
-const invaderPClass = 'invaderP'
+// const invaderPClass = 'invaderP'
 const hitInvaderClass = 'hitInvader'
 const altInvaderClass = 'invaderAlt'
 
 // * Game Variables
 
-let speedUpcount = 850
+let speedUpcount = 950
 let score = 0
 let invaderDirection = 1
 const playerStartingPosition = 217
@@ -80,24 +80,29 @@ function playerShoot() {
     playerhit(position)
   }  
   function playerhit(position) {
-    if (cells[position].classList.contains(invaderClass))
+    if (cells[position].classList.contains(invaderClass) || (cells[position].classList.contains(altInvaderClass)))
     {
-      cells[position].classList.remove(invaderClass)
-      cells[position].classList.add(hitInvaderClass)
-      const deadAlien = invaderArray.indexOf(position)
-      deadInvaderArray.push(deadAlien)
-      cells[position].classList.remove(playerPClass)
+      killInvaders(position)
+      scoreUp(1)
       clearInterval(projectileSpeed)
-      speedUpcount -= 12
-      score += 1
-      console.log(speedUpcount)
       speedUp(speedUpcount)
     }
   }
 }
 
+function scoreUp(num) {
+  score += num
+  console.log(score)
+}
 
-
+function killInvaders(position) {
+  cells[position].classList.remove(invaderClass)
+  cells[position].classList.remove(altInvaderClass)
+  cells[position].classList.add(hitInvaderClass)
+  const deadAlien = invaderArray.indexOf(position)
+  deadInvaderArray.push(deadAlien)
+  cells[position].classList.remove(playerPClass)
+}
 
 
 function addPlayer(position) {
@@ -117,7 +122,6 @@ function addInvaders() {
       }
       cells[invaderArray[i]].classList.add(invaderClass)
     }
-    
   }
 }
 
@@ -161,15 +165,13 @@ function movingInvaders() {
   }
 }
 
-
-
 let invaderSpeed = setInterval(() => {
   movingInvaders()
 }, speedUpcount)
 
 function speedUp(num) {
+  speedUpcount -= 15
   clearInterval(invaderSpeed)
-  console.log('why')
   invaderSpeed = setInterval(() => {
     movingInvaders()
   }, num)
