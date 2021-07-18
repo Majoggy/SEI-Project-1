@@ -5,7 +5,7 @@ const cells = []
 
 // * Grid Variables
 
-const gridWidth = 15
+const gridWidth = 16
 const cellCount = gridWidth * gridWidth
 
 // * Classes
@@ -16,21 +16,24 @@ const playerPClass = 'playerP'
 // const invaderPClass = 'invaderP'
 const hitInvaderClass = 'hitInvader'
 const altInvaderClass = 'invaderAlt'
+const barrierClass = 'barrier'
 
 // * Game Variables
 
 let speedUpcount = 950
 let score = 0
 let invaderDirection = 1
-const playerStartingPosition = 217
+const playerStartingPosition = 247
 let playerPosition = playerStartingPosition
-let invaderArray = [3,4,5,6,7,8,9,10,11,18,
-  19,20,21,22,23,24,25,26,33,34,35,36,37,
-  38,39,40,41,48,49,50,51,52,53,54,55,56,
-  63,64,65,66,67,68,69,70,71]
-let invaderAltArray = [ 3,4,5,6,7,8,9,10,11,18,19,20,21,22,23,24,25,26 ]
-let deadInvaderArray = []
-const playerIndex = playerPosition % gridWidth
+let invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
+  20,21,22,23,24,25,26,27,35,36,37,38,39,
+  40,41,42,43,51,52,53,54,55,56,57,58,59,
+  67,68,69,70,71,72,73,74,75 ]
+let invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
+const deadInvaderArray = []
+const barrierArrayLeft = [ 210,211,226,227 ]
+const barrierArrayMid = [ 215,216,231,232 ]
+const barrierArrayRight = [ 220,221,236,237 ]
 
 // * Generate Grid
 
@@ -42,6 +45,9 @@ function createGrid() {
     cells.push(cell)
   }
   addPlayer(playerStartingPosition)
+  addBarriers(barrierArrayLeft)
+  addBarriers(barrierArrayMid)
+  addBarriers(barrierArrayRight)
 }
 
 createGrid()
@@ -49,13 +55,13 @@ createGrid()
 // * Functions
 
 function handleKeyUp(event) {
-  const x = playerPosition % gridWidth
+  const playerIndex = playerPosition % gridWidth
   removePlayer(playerPosition)
   if (event.key === 'ArrowLeft') {
-    if (x > 0) playerPosition--
+    if (playerIndex > 0) playerPosition--
   }
   if (event.key === 'ArrowRight') { 
-    if (x < gridWidth - 1) playerPosition++
+    if (playerIndex < gridWidth - 1) playerPosition++
   }
   if (event.key === ' ') {
     playerShoot()
@@ -63,27 +69,44 @@ function handleKeyUp(event) {
   addPlayer(playerPosition)
 }
 
+function addBarriers(array) {
+  for (let i = 0; i < array.length; i++) {
+    cells[array[i]].classList.add(barrierClass)
+  }
+}
+
+// Can't for the life of me work out how to successfully seperate these functions, so they're nested together
+
 function playerShoot() {
   console.log("FIRE!")
   let position = playerPosition - gridWidth
+
+  if (cells[position].classList.contains(barrierClass)) {
+    return
+  }
+
   cells[position].classList.add(playerPClass) 
   const projectileSpeed = setInterval(shootProjectile,200)
   
   function shootProjectile() {
     cells[position].classList.remove(playerPClass)
-    if (position <= 14) {
+    if (position <= gridWidth) {
       clearInterval(projectileSpeed)
       return
     }
     position -= gridWidth
     cells[position].classList.add(playerPClass)
-    playerhit(position)
-  }  
-  function playerhit(position) {
-    if (cells[position].classList.contains(invaderClass) || (cells[position].classList.contains(altInvaderClass)))
-    {
+    playerHit()
+  } 
+  function playerHit() {
+    if (cells[position].classList.contains(invaderClass) || (cells[position].classList.contains(altInvaderClass))) {
+      if (cells[position].classList.contains(invaderClass)) {
+        scoreUp(10)
+      }
+      if (cells[position].classList.contains(altInvaderClass)) {
+        scoreUp(20)
+      }
       killInvaders(position)
-      scoreUp(1)
       clearInterval(projectileSpeed)
       speedUp(speedUpcount)
     }
@@ -104,7 +127,6 @@ function killInvaders(position) {
   cells[position].classList.remove(playerPClass)
 }
 
-
 function addPlayer(position) {
   cells[position].classList.add(playerClass)
 }
@@ -115,9 +137,8 @@ function removePlayer(position) {
 
 function addInvaders() {
   for (let i = 0; i < invaderArray.length; i ++) {
-  
     if (!deadInvaderArray.includes(i)) {
-      if (invaderAltArray[i] == invaderArray[i]) {
+      if (invaderAltArray[i] == invaderArray[i]) { 
         cells[invaderArray[i]].classList.add(altInvaderClass)
       }
       cells[invaderArray[i]].classList.add(invaderClass)

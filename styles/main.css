@@ -36,8 +36,8 @@ body {
 .grid div {
   border: 1px solid lightgrey;
   flex-grow: 1;
-  height: 44px;
-  width: 44px;
+  height: 40px;
+  width: 40px;
 }
 
 /* Classes for 'sprites' */
@@ -64,6 +64,10 @@ body {
 
 .grid div.InvaderP {
   background-color: darkred;
+}
+
+.grid div.barrier {
+  background-color: cadetblue;
 }
 
 /* CRT scanline effect */
