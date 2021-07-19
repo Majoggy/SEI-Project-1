@@ -20,7 +20,10 @@ const barrierClass = 'barrier'
 
 // * Game Variables
 
-let speedUpcount = 950
+let endWave = false
+let waveNumber = 1
+let livesLeft = 3
+let speedUpcount = 1050
 let score = 0
 let invaderDirection = 1
 const playerStartingPosition = 247
@@ -31,7 +34,7 @@ let invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
   67,68,69,70,71,72,73,74,75 ]
 let invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
 let possibleshooterArray = []
-const deadInvaderArray = []
+let deadInvaderArray = []
 const barrierArrayLeft = [ 210,211,226,227 ]
 const barrierArrayMid = [ 215,216,231,232 ]
 const barrierArrayRight = [ 220,221,236,237 ]
@@ -96,6 +99,10 @@ function playerShoot() {
       clearInterval(projectileSpeed)
       return
     }
+    if (endWave) {
+      clearInterval(projectileSpeed)
+      return
+    }
     position -= gridWidth
     cells[position].classList.add(playerPClass)
     playerHit()
@@ -119,20 +126,36 @@ function invaderShoot() {
   let invaderShooterPosition = calculatePossibleShooters()
   invaderShooterPosition = invaderShooterPosition + gridWidth
   cells[invaderShooterPosition].classList.add(invaderPClass)
-  setInterval(alienProjectile, 200)
+  const projectileTimer = setInterval(alienProjectile, 200)
 
   function alienProjectile() {
     if (cells[invaderShooterPosition].classList.contains(barrierClass)) {
+      cells[invaderShooterPosition].classList.remove(invaderPClass)
+      clearInterval(projectileTimer)
+      return
+    }
+    if (cells[invaderShooterPosition].classList.contains(playerClass)) {
+      cells[invaderShooterPosition].classList.remove(invaderPClass)
+      clearInterval(projectileTimer)
+      loseLife()
       return
     }
     if (gridEndArray.includes(invaderShooterPosition)) {
       cells[invaderShooterPosition].classList.remove(invaderPClass)
+      clearInterval(projectileTimer)
       return
     }
+
     cells[invaderShooterPosition].classList.remove(invaderPClass)
     invaderShooterPosition += gridWidth
     cells[invaderShooterPosition].classList.add(invaderPClass)
   }
+}
+
+function loseLife () {
+  livesLeft -= 1
+  console.log(livesLeft)
+  console.log('LOST A LIFE DAWG')
 }
 
 function calculatePossibleShooters () {
@@ -196,7 +219,8 @@ function movingInvaders() {
   const gridRight = invaderArray[invaderArray.length - 1] % gridWidth === gridWidth - 1
 
   removeInvaders()
-
+  endWave = false
+  
   if (gridRight && invaderDirection === 1) {
     invaderArray = invaderArray.map(invader => invader + gridWidth + 1)
     invaderAltArray = invaderAltArray.map(invader => invader + gridWidth + 1)
@@ -216,10 +240,44 @@ function movingInvaders() {
 
 function hasWon () {
   if (invaderArray.length === deadInvaderArray.length) {
-    console.log('YOU WIN')
+    waveNumber += 1
+    livesLeft += 1
+    deadInvaderArray = []
+    removeInvaders()
+    invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
+      20,21,22,23,24,25,26,27,35,36,37,38,39,
+      40,41,42,43,51,52,53,54,55,56,57,58,59,
+      67,68,69,70,71,72,73,74,75 ]
+    invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
+    if (waveNumber === 2) {
+      speedUpcount = 950
+    }
+    if (waveNumber === 3) {
+      speedUpcount = 900
+    }
+    if (waveNumber === 4) {
+      speedUpcount = 850
+    }
+    if (waveNumber >= 5) {
+      speedUpcount = 750
+    }
+    
+    endWave = true
     clearInterval(invaderSpeed)
+    clearInterval(invaderShootTimer)
+    addInvaders()
+    movingInvaders()
+    console.log('WAVE ' + waveNumber +'. Speed is now ' + speedUpcount)
   }
 }
+
+function speedUpWave() {
+
+}
+
+function resetInvaders() {
+
+} 
 
 const invaderShootTimer = setInterval(invaderShoot,1500)
 
