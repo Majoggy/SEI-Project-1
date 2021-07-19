@@ -37,9 +37,9 @@ let invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
 let invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
 let possibleshooterArray = []
 let deadInvaderArray = []
-const barrierArrayLeft = [ 210,211,226,227 ]
-const barrierArrayMid = [ 215,216,231,232 ]
-const barrierArrayRight = [ 220,221,236,237 ]
+const barrierArray = [ 226, 230, 233, 237 ]
+// const barrierArrayMid = [ 215,216,231,232 ]
+// const barrierArrayRight = [ 220,221,236,237 ]
 const gridEndArray = [ 240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255]
 
 // * Generate Grid
@@ -52,9 +52,7 @@ function createGrid() {
     cells.push(cell)
   }
   addPlayer(playerStartingPosition)
-  addBarriers(barrierArrayLeft)
-  addBarriers(barrierArrayMid)
-  addBarriers(barrierArrayRight)
+  addBarriers(barrierArray)
 }
 
 createGrid()

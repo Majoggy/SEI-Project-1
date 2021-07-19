@@ -103,7 +103,10 @@ body {
 }
 
 .grid div.barrier {
-  background-color: cadetblue;
+  background-image: url('../assets/barrier.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-color: cadetblue; */
 }
 
 /* CRT scanline effect */
