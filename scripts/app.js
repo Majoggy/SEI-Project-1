@@ -190,9 +190,16 @@ function killInvaders(position) {
   cells[position].classList.remove(invaderClass)
   cells[position].classList.remove(altInvaderClass)
   cells[position].classList.add(hitInvaderClass)
+  setTimeout(deleteExplosions, 400)
   const deadAlien = invaderArray.indexOf(position)
   deadInvaderArray.push(deadAlien)
   cells[position].classList.remove(playerPClass)
+}
+
+function deleteExplosions() {
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].classList.remove(hitInvaderClass)
+  }
 }
 
 function addPlayer(position) {

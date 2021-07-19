@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Space Invaders';
-  src: url('PressStart2P-vaV7.ttf') format('truetype');
+  src: url('../fonts/PressStart2P-vaV7.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -62,30 +62,44 @@ body {
 /* Classes for 'sprites' */
 
 .grid div.player {
-  /* background-image: url('/ship.png');
+  background-image: url('../assets/player.png');
   background-repeat: no-repeat;
-  background-size: cover; */
-  background-color: green;
+  background-size: cover;
+  /* background-color: green; */
 }
 
 .grid div.invader {
-  background-color: red;
+  background-image: url('../assets/aliena1.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-color: red; */
 }
 
 .grid div.invaderAlt {
-  background-color: darksalmon;
+  background-image: url('../assets/alienb2.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-color: darksalmon; */
 }
 
 .grid div.hitInvader {
-  background-color: none;
+  background-image: url('../assets/explosion.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .grid div.playerP {
-  background-color: yellow;
+  background-image: url('../assets/playerprojectile.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-color: yellow; */
 }
 
 .grid div.invaderP {
-  background-color: darkred;
+  background-image: url('../assets/projectile.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-color: salmon; */
 }
 
 .grid div.barrier {
