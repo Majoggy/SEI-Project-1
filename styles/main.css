@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Space Invaders';
+  src: url('/styles/space_invaders.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   background-color: black;
   overflow: hidden;
@@ -9,22 +17,22 @@ body {
   margin-top: 210px;
   display: flex;
   justify-content: space-evenly;
-  background-color: red;
+  background-color:black;
 }
 
 .game-text {
   color: white;
+  font-family: 'Space Invaders';
 }
 
 .grid-wrapper {
   display: flex;
   justify-content: center;
-  background-color: blueviolet;
+  background-color: black;
 }
 
 .grid {
   align-items: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
   display: flex;
   flex-wrap: wrap;
   height: 100%;
@@ -34,10 +42,10 @@ body {
 }
 
 .grid div {
-  border: 1px solid lightgrey;
+  /* border: 1px solid lightgrey; */
   flex-grow: 1;
-  height: 40px;
-  width: 40px;
+  height: 41px;
+  width: 41px;
 }
 
 /* Classes for 'sprites' */
@@ -51,7 +59,7 @@ body {
 }
 
 .grid div.invaderAlt {
- background-color: darksalmon;
+  background-color: darksalmon;
 }
 
 .grid div.hitInvader {
@@ -62,7 +70,7 @@ body {
   background-color: yellow;
 }
 
-.grid div.InvaderP {
+.grid div.invaderP {
   background-color: darkred;
 }
 
@@ -99,3 +107,4 @@ body {
   background-size: 100% 2px, 3px 100%;
   pointer-events: none;
 }
+
