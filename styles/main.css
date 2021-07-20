@@ -6,18 +6,30 @@
   font-display: swap;
 }
 
+/* Status Bar */
+
 body {
-  background-color: black;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-content: center;
+  background-color:black;
   overflow: hidden;
 }
 
-/* Status Bar */
+.big-wrapper {
+  display: flex;
+  justify-content: center;
+  color: black;
+}
 
 .status-bar-wrapper {
-  margin-top: 210px;
+  margin-top: 170px;
+  margin-bottom: 50px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   background-color:black;
+  width: 690px;
 }
 
 .game-text {
@@ -28,7 +40,9 @@ body {
 .grid-wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
   background-color: black;
+  flex-direction: column;
 }
 
 .grid {
@@ -48,7 +62,27 @@ body {
   flex-grow: 1;
   height: 41px;
   width: 41px;
-  font-family: 'Space-chars';
+}
+
+#wave-text {
+  margin-left: 240px;
+  margin-top: 170px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-family: 'Space Invaders';
+  display: none;
+}
+
+.lives-remaining-bar {
+  margin-top: 15px;
+  padding-top: 8px;
+  color: white;
+  display: flex;
+  justify-content: space-evenly;
+  font-family: 'Space Invaders';
+  width: 690px;
+  border-top: 3px solid green;
 }
 
 /* Classes for 'sprites' */
@@ -100,6 +134,17 @@ body {
   background-repeat: no-repeat;
   background-size: 100%;
   /* background-color: cadetblue; */
+}
+
+.lives-box {
+  display: flex;
+}
+
+#lives-left {
+  width: 40px;
+  height: 30px;
+  margin-top: 4px;
+  margin-left: 7px;
 }
 
 /* CRT scanline effect */

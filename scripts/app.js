@@ -3,6 +3,8 @@
 const grid = document.querySelector('.grid')
 const scoreDisplay = document.getElementById('game-text-1')
 const highScoreDisplay = document.getElementById('game-text-2')
+const waveBanner = document.getElementById('wave-text')
+const livesCounter = document.getElementById('lives-counter')
 
 const cells = []
 
@@ -40,8 +42,6 @@ let invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
 let possibleshooterArray = []
 let deadInvaderArray = []
 const barrierArray = [ 226, 230, 233, 237 ]
-// const barrierArrayMid = [ 215,216,231,232 ]
-// const barrierArrayRight = [ 220,221,236,237 ]
 const gridEndArray = [ 240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255]
 
 // * Generate Grid
@@ -166,8 +166,7 @@ function invaderShoot() {
 
 function loseLife () {
   livesLeft -= 1
-  console.log(livesLeft)
-  console.log('LOST A LIFE DAWG')
+  livesCounter.innerHTML = `${livesLeft} x `
 }
 
 function calculatePossibleShooters () {
@@ -302,10 +301,11 @@ function clearScreen() {
   }
   scoreDisplay.innerHTML = ''
   highScoreDisplay.innerHTML = ''
+  waveBanner.innerHTML = `WAVE ${waveNumber}`
+  waveBanner.style.display = 'block'
 }
 
 function resetWave() {
-  scoreUp(0)
   highScoreDisplay.innerHTML = 'HI-SCORE'
   endWave = false
   addPlayer(playerPosition)
@@ -324,6 +324,7 @@ function resetWave() {
   invaderShootTimer = setInterval(invaderShoot,1500)
   console.log('WAVE ' + waveNumber +'. Speed is now ' + speedUpcount)
   scoreUp(0)
+  waveBanner.style.display = 'none'
 } 
 
 let invaderShootTimer = setInterval(invaderShoot,1500)
