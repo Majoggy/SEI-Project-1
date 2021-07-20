@@ -5,6 +5,7 @@ const scoreDisplay = document.getElementById('game-text-1')
 const highScoreDisplay = document.getElementById('game-text-2')
 const waveBanner = document.getElementById('wave-text')
 const livesCounter = document.getElementById('lives-counter')
+const waveCounter = document.getElementById('wave-counter')
 
 const cells = []
 
@@ -34,17 +35,14 @@ let score = 0
 let invaderDirection = 1
 const playerStartingPosition = 247
 let playerPosition = playerStartingPosition
-let invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
-  20,21,22,23,24,25,26,27,35,36,37,38,39,
-  40,41,42,43,51,52,53,54,55,56,57,58,59,
-  67,68,69,70,71,72,73,74,75 ]
-let invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
+let invaderArray = []
+let invaderAltArray = []
 let possibleshooterArray = []
 let deadInvaderArray = []
 const barrierArray = [ 226, 230, 233, 237 ]
 const gridEndArray = [ 240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255]
 
-// * Generate Grid
+// * Generate Grid & Barriers
 
 function createGrid() {
   for (let i = 0; i < cellCount; i++) {
@@ -53,13 +51,35 @@ function createGrid() {
     grid.appendChild(cell)
     cells.push(cell)
   }
-  addPlayer(playerStartingPosition)
-  addBarriers(barrierArray)
 }
 
-createGrid()
+function addBarriers(array) {
+  for (let i = 0; i < array.length; i++) {
+    cells[array[i]].classList.add(barrierClass)
+  }
+}
 
-// * Functions
+function setAlienArrays() {
+  invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
+    20,21,22,23,24,25,26,27,35,36,37,38,39,
+    40,41,42,43,51,52,53,54,55,56,57,58,59,
+    67,68,69,70,71,72,73,74,75 ]
+  invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
+}
+
+// * Start Game
+
+function startGame() {
+  createGrid()
+  addPlayer(playerStartingPosition)
+  addBarriers(barrierArray)
+  setAlienArrays()
+  addInvaders()
+}
+
+startGame()
+
+// * Controls & player movement
 
 function handleKeyUp(event) {
   if (!endWave) {
@@ -80,41 +100,41 @@ function handleKeyUp(event) {
   }
 }
 
-function addBarriers(array) {
-  for (let i = 0; i < array.length; i++) {
-    cells[array[i]].classList.add(barrierClass)
-  }
+function addPlayer(position) {
+  cells[position].classList.add(playerClass)
 }
 
-// Can't for the life of me work out how to successfully seperate these functions, so they're nested together
+function removePlayer(position) {
+  cells[position].classList.remove(playerClass)
+}
+
+// * Player shooting
+
+function keySpamTimer() {
+  keySpam = false
+}
 
 function playerShoot() {
   let position = playerPosition - gridWidth
-
+  keySpam = true
+  setTimeout(keySpamTimer,830)
   if (cells[position].classList.contains(barrierClass)) {
     return
   }
-
   cells[position].classList.add(playerPClass) 
-  const projectileSpeed = setInterval(shootProjectile,30)
+  const projectileSpeed = setInterval(shootProjectile,25)
   
   function shootProjectile() {
-    keySpam = true
-    setTimeout(keySpamTimer,800)
     cells[position].classList.remove(playerPClass)
-    if (position <= gridWidth) {
+    if (position <= gridWidth || endWave) {
       clearInterval(projectileSpeed)  
-      return
-    }
-    if (endWave) {
-      clearInterval(projectileSpeed)
       return
     }
     position -= gridWidth
     cells[position].classList.add(playerPClass)
     playerHit()
-    
   } 
+
   function playerHit() {
     if (cells[position].classList.contains(invaderClass) || (cells[position].classList.contains(altInvaderClass))) {
       if (cells[position].classList.contains(invaderClass)) {
@@ -130,9 +150,7 @@ function playerShoot() {
   }
 }
 
-function keySpamTimer() {
-  keySpam = false
-}
+// * Invader shooting
 
 function invaderShoot() {
   let invaderShooterPosition = calculatePossibleShooters()
@@ -144,29 +162,19 @@ function invaderShoot() {
     if (cells[invaderShooterPosition].classList.contains(barrierClass)) {
       cells[invaderShooterPosition].classList.remove(invaderPClass)
       clearInterval(projectileTimer)
-      return
-    }
-    if (cells[invaderShooterPosition].classList.contains(playerClass)) {
+    } else if (cells[invaderShooterPosition].classList.contains(playerClass)) {
       cells[invaderShooterPosition].classList.remove(invaderPClass)
       clearInterval(projectileTimer)
       loseLife()
-      return
-    }
-    if (gridEndArray.includes(invaderShooterPosition)) {
+    } else if (gridEndArray.includes(invaderShooterPosition)) {
       cells[invaderShooterPosition].classList.remove(invaderPClass)
       clearInterval(projectileTimer)
-      return
+    } else {
+      cells[invaderShooterPosition].classList.remove(invaderPClass)
+      invaderShooterPosition += gridWidth
+      cells[invaderShooterPosition].classList.add(invaderPClass)
     }
-
-    cells[invaderShooterPosition].classList.remove(invaderPClass)
-    invaderShooterPosition += gridWidth
-    cells[invaderShooterPosition].classList.add(invaderPClass)
   }
-}
-
-function loseLife () {
-  livesLeft -= 1
-  livesCounter.innerHTML = `${livesLeft} x `
 }
 
 function calculatePossibleShooters () {
@@ -180,28 +188,12 @@ function calculatePossibleShooters () {
   return parseInt(cells[invaderArray[randomShooterGenerator]].value)
 }
 
-function scoreUp(num) {
-  score += num
-  console.log(score)
-  if (score > 0) {
-    scoreDisplay.innerHTML = `SCORE <1> 00${score}`
-  }
-  if (score >= 100) {
-    scoreDisplay.innerHTML = `SCORE <1> 0${score}`
-  }
-  if (score >= 1000) {
-    scoreDisplay.innerHTML = `SCORE <1> ${score}`
-  }
-}
-
 function killInvaders(position) {
-  cells[position].classList.remove(invaderClass)
-  cells[position].classList.remove(altInvaderClass)
-  cells[position].classList.add(hitInvaderClass)
-  setTimeout(deleteExplosions, 400)
   const deadAlien = invaderArray.indexOf(position)
   deadInvaderArray.push(deadAlien)
-  cells[position].classList.remove(playerPClass)
+  cells[position].classList.remove(invaderClass, altInvaderClass, playerPClass)
+  cells[position].classList.add(hitInvaderClass)
+  setTimeout(deleteExplosions, 400)
 }
 
 function deleteExplosions() {
@@ -210,13 +202,7 @@ function deleteExplosions() {
   }
 }
 
-function addPlayer(position) {
-  cells[position].classList.add(playerClass)
-}
-
-function removePlayer(position) {
-  cells[position].classList.remove(playerClass)
-}
+// * Invader Movement
 
 function addInvaders() {
   for (let i = 0; i < invaderArray.length; i ++) {
@@ -238,10 +224,7 @@ function removeInvaders() {
   }
 }
 
-addInvaders()
-
 function movingInvaders() {
-  
   const gridLeft = invaderArray[0] % gridWidth === 0
   const gridRight = invaderArray[invaderArray.length - 1] % gridWidth === gridWidth - 1
 
@@ -251,12 +234,11 @@ function movingInvaders() {
     invaderArray = invaderArray.map(invader => invader + gridWidth + 1)
     invaderAltArray = invaderAltArray.map(invader => invader + gridWidth + 1)
     invaderDirection = -1
-  } if (gridLeft && invaderDirection === - 1) {
+  } else if (gridLeft && invaderDirection === - 1) {
     invaderArray = invaderArray.map(invader => invader + gridWidth - 1)
     invaderAltArray = invaderAltArray.map(invader => invader + gridWidth - 1)
     invaderDirection = 1
   } 
-  
   invaderArray = invaderArray.map(invader => invader + invaderDirection)
   invaderAltArray = invaderAltArray.map(invader => invader + invaderDirection)
   
@@ -264,15 +246,37 @@ function movingInvaders() {
   hasWon()
 }
 
+// * Score & lives
+
+function loseLife () {
+  livesLeft -= 1
+  livesCounter.innerHTML = `${livesLeft} x `
+}
+
+function oneUp() {
+  livesLeft += 1
+  livesCounter.innerHTML = `${livesLeft} x `
+}
+
+function scoreUp(num) {
+  score += num
+  if (score > 0) {
+    scoreDisplay.innerHTML = `SCORE <1> 00${score}`
+  } else if (score >= 100) {
+    scoreDisplay.innerHTML = `SCORE <1> 0${score}`
+  } else (score >= 1000)
+  scoreDisplay.innerHTML = `SCORE <1> ${score}`
+}
+
+// * Winning, losing & resetting
+
 function hasWon () {
   if (invaderArray.length === deadInvaderArray.length) {
     endWave = true
     waveNumber += 1
-    livesLeft += 1
     deadInvaderArray = []
     removeInvaders()
-    invaderArray =  []
-    invaderAltArray = []
+
     if (waveNumber === 2) {
       speedUpcount = 950
     }
@@ -285,6 +289,7 @@ function hasWon () {
     if (waveNumber >= 5) {
       speedUpcount = 750
     }
+
     clearInterval(invaderSpeed)
     clearInterval(invaderShootTimer)
     clearScreen()
@@ -294,15 +299,14 @@ function hasWon () {
 
 function clearScreen() {
   for (let i = 0; i < cells.length; i++) {
-    cells[i].classList.remove(altInvaderClass)
-    cells[i].classList.remove(invaderClass)
-    cells[i].classList.remove(playerClass)
-    cells[i].classList.remove(barrierClass)
+    cells[i].classList.remove(altInvaderClass, invaderClass, playerClass, barrierClass)
   }
   scoreDisplay.innerHTML = ''
   highScoreDisplay.innerHTML = ''
-  waveBanner.innerHTML = `WAVE ${waveNumber}`
+  waveBanner.innerHTML = `WAVE 0${waveNumber}`
+  waveCounter.innerHTML = `WAVE 0${waveNumber}`
   waveBanner.style.display = 'block'
+  oneUp()
 }
 
 function resetWave() {
@@ -310,28 +314,20 @@ function resetWave() {
   endWave = false
   addPlayer(playerPosition)
   addBarriers(barrierArray)
-  invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
-    20,21,22,23,24,25,26,27,35,36,37,38,39,
-    40,41,42,43,51,52,53,54,55,56,57,58,59,
-    67,68,69,70,71,72,73,74,75 ]
-  invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
+  setAlienArrays()
   addInvaders()
-  
-  invaderSpeed = setInterval(() => {
-    movingInvaders()
-  }, speedUpcount)
+  invaderSpeed = setInterval(movingInvaders,speedUpcount)
 
   invaderShootTimer = setInterval(invaderShoot,1500)
-  console.log('WAVE ' + waveNumber +'. Speed is now ' + speedUpcount)
   scoreUp(0)
   waveBanner.style.display = 'none'
 } 
 
+// * Timers
+
 let invaderShootTimer = setInterval(invaderShoot,1500)
 
-let invaderSpeed = setInterval(() => {
-  movingInvaders()
-}, speedUpcount)
+let invaderSpeed = setInterval(movingInvaders, speedUpcount)
 
 function speedUp(num) {
   speedUpcount -= 15
