@@ -25,14 +25,6 @@ body {
   font-family: 'Space Invaders';
 }
 
-.scoreDisplayInit {
-  color: white;
-}
-
-.scoreDisplay {
-  color: white;
-}
-
 .grid-wrapper {
   display: flex;
   justify-content: center;
@@ -64,48 +56,49 @@ body {
 .grid div.player {
   background-image: url('../assets/player.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100%;
   /* background-color: green; */
 }
 
 .grid div.invader {
   background-image: url('../assets/aliena1.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 80%;
   /* background-color: red; */
-}
+}  
 
 .grid div.invaderAlt {
   background-image: url('../assets/alienb2.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100%;
   /* background-color: darksalmon; */
 }
 
 .grid div.hitInvader {
   background-image: url('../assets/explosion.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100%;
 }
 
 .grid div.playerP {
   background-image: url('../assets/playerprojectile.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 70%;
+  background-position: 7px 0;
   /* background-color: yellow; */
 }
 
 .grid div.invaderP {
   background-image: url('../assets/projectile.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 70%;
   /* background-color: salmon; */
 }
 
 .grid div.barrier {
   background-image: url('../assets/barrier.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100%;
   /* background-color: cadetblue; */
 }
 
@@ -123,7 +116,6 @@ body {
   opacity: 0;
   z-index: 2;
   pointer-events: none;
-  animation: flicker 0.15s infinite;
 }
 .crt::before {
   content: " ";

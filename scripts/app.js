@@ -1,8 +1,9 @@
 // * Dom Elements
 
 const grid = document.querySelector('.grid')
-const scoreDisplay = document.querySelector('.scoreDisplay')
-const initalScoreDisplay = document.querySelector('.scoreDisplayInit')
+const scoreDisplay = document.getElementById('game-text-1')
+const highScoreDisplay = document.getElementById('game-text-2')
+
 const cells = []
 
 // * Grid Variables
@@ -22,6 +23,7 @@ const barrierClass = 'barrier'
 
 // * Game Variables
 
+let keySpam = false
 let endWave = false
 let waveNumber = 1
 let livesLeft = 3
@@ -70,7 +72,9 @@ function handleKeyUp(event) {
       if (playerIndex < gridWidth - 1) playerPosition++
     }
     if (event.key === ' ') {
-      playerShoot()
+      if (!keySpam) {
+        playerShoot()
+      }
     }
     addPlayer(playerPosition)
   }
@@ -92,12 +96,14 @@ function playerShoot() {
   }
 
   cells[position].classList.add(playerPClass) 
-  const projectileSpeed = setInterval(shootProjectile,200)
+  const projectileSpeed = setInterval(shootProjectile,30)
   
   function shootProjectile() {
+    keySpam = true
+    setTimeout(keySpamTimer,800)
     cells[position].classList.remove(playerPClass)
     if (position <= gridWidth) {
-      clearInterval(projectileSpeed)
+      clearInterval(projectileSpeed)  
       return
     }
     if (endWave) {
@@ -107,6 +113,7 @@ function playerShoot() {
     position -= gridWidth
     cells[position].classList.add(playerPClass)
     playerHit()
+    
   } 
   function playerHit() {
     if (cells[position].classList.contains(invaderClass) || (cells[position].classList.contains(altInvaderClass))) {
@@ -123,11 +130,15 @@ function playerShoot() {
   }
 }
 
+function keySpamTimer() {
+  keySpam = false
+}
+
 function invaderShoot() {
   let invaderShooterPosition = calculatePossibleShooters()
   invaderShooterPosition = invaderShooterPosition + gridWidth
   cells[invaderShooterPosition].classList.add(invaderPClass)
-  const projectileTimer = setInterval(alienProjectile, 200)
+  const projectileTimer = setInterval(alienProjectile, 120)
 
   function alienProjectile() {
     if (cells[invaderShooterPosition].classList.contains(barrierClass)) {
@@ -172,16 +183,16 @@ function calculatePossibleShooters () {
 
 function scoreUp(num) {
   score += num
+  console.log(score)
   if (score > 0) {
-    initalScoreDisplay.innerHTML = '00'
+    scoreDisplay.innerHTML = `SCORE <1> 00${score}`
   }
   if (score >= 100) {
-    initalScoreDisplay.innerHTML = '0'
+    scoreDisplay.innerHTML = `SCORE <1> 0${score}`
   }
   if (score >= 1000) {
-    initalScoreDisplay.innerHTML = ''
+    scoreDisplay.innerHTML = `SCORE <1> ${score}`
   }
-  scoreDisplay.innerHTML = score
 }
 
 function killInvaders(position) {
@@ -261,11 +272,8 @@ function hasWon () {
     livesLeft += 1
     deadInvaderArray = []
     removeInvaders()
-    invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
-      20,21,22,23,24,25,26,27,35,36,37,38,39,
-      40,41,42,43,51,52,53,54,55,56,57,58,59,
-      67,68,69,70,71,72,73,74,75 ]
-    invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
+    invaderArray =  []
+    invaderAltArray = []
     if (waveNumber === 2) {
       speedUpcount = 950
     }
@@ -292,22 +300,30 @@ function clearScreen() {
     cells[i].classList.remove(playerClass)
     cells[i].classList.remove(barrierClass)
   }
+  scoreDisplay.innerHTML = ''
+  highScoreDisplay.innerHTML = ''
 }
 
 function resetWave() {
+  scoreUp(0)
+  highScoreDisplay.innerHTML = 'HI-SCORE'
   endWave = false
   addPlayer(playerPosition)
-  addBarriers(barrierArrayLeft)
-  addBarriers(barrierArrayMid)
-  addBarriers(barrierArrayRight)
+  addBarriers(barrierArray)
+  invaderArray = [ 3,4,5,6,7,8,9,10,11,19,
+    20,21,22,23,24,25,26,27,35,36,37,38,39,
+    40,41,42,43,51,52,53,54,55,56,57,58,59,
+    67,68,69,70,71,72,73,74,75 ]
+  invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
   addInvaders()
   
-  setInterval(() => {
+  invaderSpeed = setInterval(() => {
     movingInvaders()
   }, speedUpcount)
 
   invaderShootTimer = setInterval(invaderShoot,1500)
   console.log('WAVE ' + waveNumber +'. Speed is now ' + speedUpcount)
+  scoreUp(0)
 } 
 
 let invaderShootTimer = setInterval(invaderShoot,1500)
