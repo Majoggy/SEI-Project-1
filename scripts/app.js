@@ -3,16 +3,19 @@
 const grid = document.querySelector('.grid')
 const scoreDisplay = document.getElementById('game-text-1')
 const highScoreDisplay = document.getElementById('game-text-2')
-const waveBanner = document.getElementById('wave-text')
+const bannerText = document.getElementById('banner-text')
+const bannerSubText = document.getElementById('banner-sub-text')
 const livesCounter = document.getElementById('lives-counter')
 const waveCounter = document.getElementById('wave-counter')
+const livesWavesBar = document.querySelector('.lives-remaining-bar')
+const statusBar = document.querySelector('.status-bar-wrapper')
 
-const cells = []
 
 // * Grid Variables
 
 const gridWidth = 16
 const cellCount = gridWidth * gridWidth
+
 
 // * Classes
 
@@ -24,8 +27,12 @@ const hitInvaderClass = 'hitInvader'
 const altInvaderClass = 'invaderAlt'
 const barrierClass = 'barrier'
 
+
 // * Game Variables
 
+
+let isGameOver = false
+let isTitleScreen = true
 let keySpam = false
 let endWave = false
 let waveNumber = 1
@@ -35,12 +42,37 @@ let score = 0
 let invaderDirection = 1
 const playerStartingPosition = 247
 let playerPosition = playerStartingPosition
+let screenTopCount = 0
+
+
+// * Arrays
+
+const cells = []
 let invaderArray = []
 let invaderAltArray = []
 let possibleshooterArray = []
 let deadInvaderArray = []
 const barrierArray = [ 226, 230, 233, 237 ]
 const gridEndArray = [ 240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255]
+const screenTopArray = [ 3,4,5,6,7,8,9,10,11,19,
+  20,21,22,23,24,25,26,27,35,36,37,38,39,
+  40,41,42,43,51,52,53,54,55,56,57,58,59 ]
+
+
+// * Timers
+
+let invaderShootTimer = setInterval(invaderShoot,1500)
+
+let invaderSpeed = setInterval(movingInvaders, speedUpcount)
+
+function speedUp(num) {
+  speedUpcount -= 15
+  clearInterval(invaderSpeed)
+  invaderSpeed = setInterval(() => {
+    movingInvaders()
+  }, num)
+}
+
 
 // * Generate Grid & Barriers
 
@@ -67,22 +99,33 @@ function setAlienArrays() {
   invaderAltArray = [ 3,4,5,6,7,8,9,10,11,19,20,21,22,23,24,25,26,27 ]
 }
 
+
 // * Start Game
 
-function startGame() {
+function titleScreen() {
   createGrid()
+  clearBars()
+  clearInterval(invaderSpeed)
+  clearInterval(invaderShootTimer)
+}
+
+function startGame() {
+  displayBars()
   addPlayer(playerStartingPosition)
   addBarriers(barrierArray)
   setAlienArrays()
   addInvaders()
+  invaderSpeed = setInterval(movingInvaders,speedUpcount)
+  invaderShootTimer = setInterval(invaderShoot,1500)
 }
 
-startGame()
+titleScreen()
+
 
 // * Controls & player movement
 
 function handleKeyUp(event) {
-  if (!endWave) {
+  if (!endWave && !isTitleScreen) {
     const playerIndex = playerPosition % gridWidth
     removePlayer(playerPosition)
     if (event.key === 'ArrowLeft') {
@@ -98,6 +141,12 @@ function handleKeyUp(event) {
     }
     addPlayer(playerPosition)
   }
+  if (event.key === 'Enter') {
+    if (isTitleScreen) {
+      isTitleScreen = false
+      startGame()
+    }
+  }
 }
 
 function addPlayer(position) {
@@ -107,6 +156,7 @@ function addPlayer(position) {
 function removePlayer(position) {
   cells[position].classList.remove(playerClass)
 }
+
 
 // * Player shooting
 
@@ -149,6 +199,7 @@ function playerShoot() {
     }
   }
 }
+
 
 // * Invader shooting
 
@@ -202,15 +253,27 @@ function deleteExplosions() {
   }
 }
 
+
 // * Invader Movement
 
 function addInvaders() {
+  // Code for dealing with array falling off screen
   for (let i = 0; i < invaderArray.length; i ++) {
+    if (invaderArray[i] >= cells.length) {
+      invaderArray[i] = screenTopArray[screenTopCount]
+      screenTopCount += 1
+    }
+    // Code for not drawing dead invaders
     if (!deadInvaderArray.includes(i)) {
       if (invaderAltArray[i] === invaderArray[i]) { 
         cells[invaderArray[i]].classList.add(altInvaderClass)
       }
       cells[invaderArray[i]].classList.add(invaderClass)
+    }
+    // Code that checks for player/invader collision
+    if (cells[invaderArray[i]].classList.contains(playerClass) && cells[invaderArray[i]].classList.contains(invaderClass)) {
+      gameOver()
+      return
     }
   }
 }
@@ -243,17 +306,25 @@ function movingInvaders() {
   invaderAltArray = invaderAltArray.map(invader => invader + invaderDirection)
   
   addInvaders()
-  hasWon()
+
+  if (deadInvaderArray.length === 45) {
+    hasWon()
+  }
 }
+
 
 // * Score & lives
 
 function loseLife () {
-  livesLeft -= 1
-  livesCounter.innerHTML = `${livesLeft} x `
+  if (livesLeft === 0) {
+    gameOver()
+  } else {
+    livesLeft -= 1
+    livesCounter.innerHTML = `${livesLeft} x ` 
+  }
 }
 
-function oneUp() {
+function oneUp() { 
   livesLeft += 1
   livesCounter.innerHTML = `${livesLeft} x `
 }
@@ -268,74 +339,89 @@ function scoreUp(num) {
   scoreDisplay.innerHTML = `SCORE <1> ${score}`
 }
 
+
 // * Winning, losing & resetting
 
 function hasWon () {
-  if (invaderArray.length === deadInvaderArray.length) {
-    endWave = true
-    waveNumber += 1
-    deadInvaderArray = []
-    removeInvaders()
+  clearInterval(invaderShootTimer)
+  endWave = true
+  deadInvaderArray = []
+  removeInvaders()
+  clearInterval(invaderSpeed)
+  clearScreen()
+  if (!isGameOver) setTimeout(resetWave,2500)
+}
 
-    if (waveNumber === 2) {
-      speedUpcount = 950
-    }
-    if (waveNumber === 3) {
-      speedUpcount = 900
-    }
-    if (waveNumber === 4) {
-      speedUpcount = 850
-    }
-    if (waveNumber >= 5) {
-      speedUpcount = 750
-    }
-
-    clearInterval(invaderSpeed)
-    clearInterval(invaderShootTimer)
-    clearScreen()
-    setTimeout(resetWave,2000)
-  }
+function waveUp() {
+  waveNumber += 1
+  if (waveNumber === 2) {
+    speedUpcount = 950
+  } else if (waveNumber === 3) {
+    speedUpcount = 900
+  } else if (waveNumber === 4) {
+    speedUpcount = 850
+  } else speedUpcount = 750
 }
 
 function clearScreen() {
   for (let i = 0; i < cells.length; i++) {
     cells[i].classList.remove(altInvaderClass, invaderClass, playerClass, barrierClass)
   }
-  scoreDisplay.innerHTML = ''
-  highScoreDisplay.innerHTML = ''
-  waveBanner.innerHTML = `WAVE 0${waveNumber}`
+  clearBars()
+  if (isGameOver) {
+    gameOverText()
+  } else {
+    waveUp()
+    nextWaveText()
+    oneUp()
+  }
+}
+
+function nextWaveText () {
+  bannerText.innerHTML = `WAVE 0${waveNumber}`
+  bannerSubText.style.marginLeft = '370px'
+  bannerSubText.innerHTML = 'GET READY'
   waveCounter.innerHTML = `WAVE 0${waveNumber}`
-  waveBanner.style.display = 'block'
-  oneUp()
+}
+
+function gameOverText () {
+  bannerText.innerHTML = 'GAME OVER'
+  bannerSubText.style.marginLeft = '330px'
+  bannerSubText.innerHTML = `YOU SCORED ${score}`
+}
+
+function clearBars () {
+  bannerText.style.display = 'block'
+  bannerSubText.style.display = 'block'
+  livesWavesBar.style.display = 'none'
+  statusBar.style.display = 'none'
+}
+
+function displayBars () {
+  bannerText.style.display = 'none'
+  bannerSubText.style.display = 'none'
+  livesWavesBar.style.display = 'flex'
+  statusBar.style.display = 'flex'
+  
 }
 
 function resetWave() {
-  highScoreDisplay.innerHTML = 'HI-SCORE'
+  displayBars()
   endWave = false
   addPlayer(playerPosition)
   addBarriers(barrierArray)
   setAlienArrays()
   addInvaders()
-  invaderSpeed = setInterval(movingInvaders,speedUpcount)
-
-  invaderShootTimer = setInterval(invaderShoot,1500)
   scoreUp(0)
-  waveBanner.style.display = 'none'
+  invaderSpeed = setInterval(movingInvaders,speedUpcount)
+  invaderShootTimer = setInterval(invaderShoot,1500)
 } 
 
-// * Timers
-
-let invaderShootTimer = setInterval(invaderShoot,1500)
-
-let invaderSpeed = setInterval(movingInvaders, speedUpcount)
-
-function speedUp(num) {
-  speedUpcount -= 15
-  clearInterval(invaderSpeed)
-  invaderSpeed = setInterval(() => {
-    movingInvaders()
-  }, num)
+function gameOver() {
+  isGameOver = true
+  hasWon()
 }
+
 
 // * Event Listeners
 

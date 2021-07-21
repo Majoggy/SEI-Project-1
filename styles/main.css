@@ -1,9 +1,31 @@
+/* Retro font */
+
 @font-face {
   font-family: 'Space Invaders';
   src: url('../fonts/PressStart2P-vaV7.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+
+/* Starting Screen/Wave Screen/Gameover Screen */
+
+#banner-text {
+  margin-left: 200px;
+  margin-top: 420px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-family: 'Space Invaders';
+  display: none;
+}
+
+#banner-sub-text {
+  margin-left: 280px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-family: 'Space Invaders';
 }
 
 /* Status Bar */
@@ -23,6 +45,8 @@ body {
   color: black;
 }
 
+
+
 .status-bar-wrapper {
   margin-top: 170px;
   margin-bottom: 50px;
@@ -36,6 +60,8 @@ body {
   color: white;
   font-family: 'Space Invaders';
 }
+
+/* The grid */
 
 .grid-wrapper {
   display: flex;
@@ -57,16 +83,17 @@ body {
 }
 
 .grid div {
-  /* border: 1px solid lightgrey; */
   list-style: none;
   flex-grow: 1;
   height: 41px;
   width: 41px;
 }
 
+/* Lives remaining & Wave Counter */
+
 #wave-text {
-  margin-left: 240px;
-  margin-top: 170px;
+  margin-left: 250px;
+  margin-top: 370px;
   justify-content: center;
   align-items: center;
   color: white;
@@ -91,21 +118,18 @@ body {
   background-image: url('../assets/player.png');
   background-repeat: no-repeat;
   background-size: 100%;
-  /* background-color: green; */
 }
 
 .grid div.invader {
   background-image: url('../assets/aliena1.png');
   background-repeat: no-repeat;
   background-size: 80%;
-  /* background-color: red; */
 }  
 
 .grid div.invaderAlt {
   background-image: url('../assets/alienb2.png');
   background-repeat: no-repeat;
   background-size: 100%;
-  /* background-color: darksalmon; */
 }
 
 .grid div.hitInvader {
@@ -119,21 +143,18 @@ body {
   background-repeat: no-repeat;
   background-size: 70%;
   background-position: 7px 0;
-  /* background-color: yellow; */
 }
 
 .grid div.invaderP {
   background-image: url('../assets/projectile.png');
   background-repeat: no-repeat;
   background-size: 70%;
-  /* background-color: salmon; */
 }
 
 .grid div.barrier {
   background-image: url('../assets/barrier.png');
   background-repeat: no-repeat;
   background-size: 100%;
-  /* background-color: cadetblue; */
 }
 
 .lives-box {
