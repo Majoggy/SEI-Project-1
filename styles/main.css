@@ -11,7 +11,7 @@
 /* Starting Screen/Wave Screen/Gameover Screen */
 
 #banner-text {
-  margin-left: 200px;
+  margin-left: 150px;
   margin-top: 420px;
   justify-content: center;
   align-items: center;
@@ -21,11 +21,14 @@
 }
 
 #banner-sub-text {
-  margin-left: 280px;
   justify-content: center;
   align-items: center;
   color: white;
   font-family: 'Space Invaders';
+}
+
+#screen-warning {
+  display: none;
 }
 
 /* Status Bar */
@@ -157,6 +160,12 @@ body {
   background-size: 100%;
 }
 
+.grid div.hitPlayer {
+  background-image: url('../assets/destroyedplayer.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
 .lives-box {
   display: flex;
 }
@@ -197,3 +206,25 @@ body {
   pointer-events: none;
 }
 
+@media only screen and (max-width: 800px) {
+  body {
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+  }
+  .grid-wrapper {
+    display: none;
+  }
+  .lives-remaining-bar {
+    display: none;
+  }
+  .big-wrapper {
+    display: none;
+  }
+  #screen-warning {
+    display: block;
+    color: red;
+    font-family: 'Space Invaders';
+    text-align: center;
+  }
+}
