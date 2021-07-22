@@ -48,8 +48,6 @@ body {
   color: black;
 }
 
-
-
 .status-bar-wrapper {
   margin-top: 170px;
   margin-bottom: 50px;
@@ -205,6 +203,8 @@ body {
   background-size: 100% 2px, 3px 100%;
   pointer-events: none;
 }
+
+/* No small screens, sorry */
 
 @media only screen and (max-width: 800px) {
   body {

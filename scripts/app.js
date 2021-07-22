@@ -99,9 +99,9 @@ function createGrid() {
 }
 
 function addBarriers(array) {
-  for (let i = 0; i < array.length; i++) {
-    cells[array[i]].classList.add(barrierClass)
-  }
+  array.forEach(element => {
+    cells[element].classList.add(barrierClass)
+  })
 }
 
 function setAlienArrays() {
@@ -116,15 +116,17 @@ function setAlienArrays() {
 // * Start Game
 
 function titleScreen() {
-  clearInterval(flashingText)
-  flashingText = setInterval(flashingTextOff,600)
-  setInterval(flashingText, 600)
-  isTitleScreen = true
-  createGrid()
   bannerText.innerHTML = 'SPACE INVADERS'
   bannerText.style.marginLeft = '100px'
   bannerSubText.style.marginLeft = '235px'
   bannerSubText.innerHTML = 'PRESS ENTER TO START'
+
+  clearInterval(flashingText)
+  flashingText = setInterval(flashingTextOff,600)
+  setInterval(flashingText, 600)
+  isTitleScreen = true
+
+  createGrid()
   clearBars()
   waveReset()
   clearInterval(invaderSpeed)
@@ -133,11 +135,11 @@ function titleScreen() {
 
 function startGame() {
   displayBars()
-  highScoreDisplay.innerHTML = `HI SCORE ${hiScore}`
   addPlayer(playerStartingPosition)
   addBarriers(barrierArray)
   setAlienArrays()
   addInvaders()
+
   invaderSpeed = setInterval(movingInvaders,speedUpcount)
   invaderShootTimer = setInterval(invaderShoot,1500)
 }
@@ -145,8 +147,6 @@ function startGame() {
 if (!localStorage.getItem('score')) {
   localStorage.setItem('score', '0000') 
 }
-
-let hiScore = localStorage.getItem('score')
 
 titleScreen()
 
@@ -158,6 +158,7 @@ function handleKeyUp(event) {
     if (!isGameOver && !isTitleScreen) {
       const playerIndex = playerPosition % gridWidth
       removePlayer(playerPosition)
+
       if (event.key === 'ArrowLeft') {
         if (playerIndex > 0) playerPosition--
       }
@@ -221,13 +222,9 @@ function playerShoot() {
 
   function playerHit() {
     if (cells[position].classList.contains(invaderClass) || (cells[position].classList.contains(altInvaderClass))) {
+      if (cells[position].classList.contains(invaderClass)) scoreUp(10)
+      if (cells[position].classList.contains(altInvaderClass)) scoreUp(20)
       invaderDeathAudio()
-      if (cells[position].classList.contains(invaderClass)) {
-        scoreUp(10)
-      }
-      if (cells[position].classList.contains(altInvaderClass)) {
-        scoreUp(20)
-      }
       killInvaders(position)
       clearInterval(projectileSpeed)
       speedUp(speedUpcount)
@@ -286,9 +283,7 @@ function invaderDeathAudio() {
 function calculatePossibleShooters () {
   possibleshooterArray = []
   for (let i = 0; i < invaderArray.length; i ++) {
-    if (!deadInvaderArray.includes(i)) {
-      possibleshooterArray.push(i)
-    }
+    if (!deadInvaderArray.includes(i)) possibleshooterArray.push(i)
   }
   const randomShooterGenerator = possibleshooterArray[Math.floor(Math.random() * possibleshooterArray.length)]
   return parseInt(cells[invaderArray[randomShooterGenerator]].value)
@@ -303,15 +298,11 @@ function killInvaders(position) {
 }
 
 function deleteExplosions() {
-  for (let i = 0; i < cells.length; i++) {
-    cells[i].classList.remove(hitInvaderClass)
-  }
+  cells.forEach(cell => cell.classList.remove(hitInvaderClass))
 }
 
 function deletePlayerExplosion() {
-  for (let i = 0; i < gridEndArray.length; i++) {
-    cells[gridEndArray[i]].classList.remove(hitPlayerClass)
-  }
+  gridEndArray.forEach(cell => cells[cell].classList.remove(hitPlayerClass))
   isPlayerDead = false
 }
 
@@ -348,7 +339,7 @@ function invaderBreachCheck() {
 
 function removeInvaders() {
   for (let i = 0; i < invaderArray.length; i ++) {
-    if (invaderAltArray[i] == invaderArray[i]) {
+    if (invaderAltArray[i] === invaderArray[i]) {
       cells[invaderArray[i]].classList.remove(altInvaderClass)
     }
     cells[invaderArray[i]].classList.remove(invaderClass)
@@ -403,20 +394,20 @@ function scoreUp(num) {
     scoreDisplay.innerHTML = `SCORE <1> 00${score}`
   } else if (score >= 100) {
     scoreDisplay.innerHTML = `SCORE <1> 0${score}`
-  } else (score >= 1000)
-  scoreDisplay.innerHTML = `SCORE <1> ${score}`
+  } else if (score >= 1000) {
+    scoreDisplay.innerHTML = `SCORE <1> ${score}`
+  }
 }
 
 function scoreReset() {
   score = 0
-  scoreDisplay.innerHTML = `SCORE <1> ${score}`
+  scoreDisplay.innerHTML = 'SCORE <1> 0000'
 }
 
 function setHighScore() {
-  if (parseInt(hiScore) < score) {
+  if (parseInt(localStorage.getItem('score')) < score) {
     isHighScore = true
     localStorage.setItem('score', score)
-    let hiScore = localStorage.getItem('score')
   }
 }
 
@@ -454,7 +445,6 @@ function clearScreen() {
   for (let i = 0; i < cells.length; i++) {
     cells[i].classList.remove(altInvaderClass, invaderClass, playerClass, barrierClass, hitPlayerClass, invaderPClass)
   }
-  clearTimeout()
   clearBars()
   if (isGameOver) {
     gameOverText()
@@ -494,8 +484,7 @@ function displayBars () {
   bannerSubText.style.display = 'none'
   livesWavesBar.style.display = 'flex'
   statusBar.style.display = 'flex'
-  highScoreDisplay.innerHTML = `HI SCORE ${hiScore}`
-  
+  highScoreDisplay.innerHTML = `HI SCORE ${localStorage.getItem('score')}`
 }
 
 function resetWave() {
