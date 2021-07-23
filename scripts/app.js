@@ -40,7 +40,7 @@ let keySpam = false
 let endWave = false
 let waveNumber = 1
 let livesLeft = 3
-let speedUpcount = 1050
+let speedUpcount = 1100
 let score = 0
 let invaderDirection = 1
 const playerStartingPosition = 247
@@ -64,7 +64,7 @@ const screenTopArray = [ 3,4,5,6,7,8,9,10,11,19,
 
 // * Timers
 
-let invaderShootTimer = setInterval(invaderShoot,1500)
+let invaderShootTimer = setInterval(invaderShoot,1300)
 
 let invaderSpeed = setInterval(movingInvaders, speedUpcount)
 
@@ -168,9 +168,7 @@ function handleKeyUp(event) {
       addPlayer(playerPosition)
 
       if (event.key === ' ') {
-        if (!keySpam) {
-          playerShoot()
-        }
+        if (!keySpam) playerShoot()
       }
     }
     if (event.key === 'Enter') {
@@ -199,9 +197,9 @@ function keySpamTimer() {
 }
 
 function playerShoot() {
-  let position = playerPosition - gridWidth
   keySpam = true
-  setTimeout(keySpamTimer,830)
+  let position = playerPosition - gridWidth
+  setTimeout(keySpamTimer,900)
   if (cells[position].classList.contains(barrierClass)) {
     return
   }
@@ -239,7 +237,7 @@ function invaderShoot() {
   let invaderShooterPosition = calculatePossibleShooters()
   invaderShooterPosition = invaderShooterPosition + gridWidth
   cells[invaderShooterPosition].classList.add(invaderPClass)
-  const projectileTimer = setInterval(alienProjectile, 120)
+  const projectileTimer = setInterval(alienProjectile, 90)
 
   function alienProjectile() {
     if (cells[invaderShooterPosition].classList.contains(barrierClass)) {
@@ -328,22 +326,21 @@ function addInvaders() {
 }
 
 function invaderBreachCheck() {
-  for (let i = 0; i < gridEndArray.length; i ++) {
-    if (cells[gridEndArray[i]].classList.contains(invaderClass) || (cells[gridEndArray[i]].classList.contains(invaderClass))) {
+  gridEndArray.forEach(cell => {
+    if (cells[cell].classList.contains(invaderClass) || (cells[cell].classList.contains(invaderClass))) {
       loseLife(livesLeft)
       playerDeathAudio()
-      return
+      return 
     }
-  }
+  })
 }
 
+
 function removeInvaders() {
-  for (let i = 0; i < invaderArray.length; i ++) {
-    if (invaderAltArray[i] === invaderArray[i]) {
-      cells[invaderArray[i]].classList.remove(altInvaderClass)
-    }
-    cells[invaderArray[i]].classList.remove(invaderClass)
-  }
+  invaderArray.forEach(cell => {
+    if (invaderAltArray[cell.indexOf] === cell.indexOf) cells[cell].classList.remove(altInvaderClass)
+    cells[cell].classList.remove(invaderClass)
+  })
 }
 
 function movingInvaders() {
@@ -427,17 +424,17 @@ function hasWon () {
 function waveUp() {
   waveNumber += 1
   if (waveNumber === 2) {
-    speedUpcount = 950
+    speedUpcount = 1000
   } else if (waveNumber === 3) {
     speedUpcount = 900
   } else if (waveNumber === 4) {
     speedUpcount = 850
-  } else speedUpcount = 750
+  } else speedUpcount = 800
 }
 
 function waveReset() {
   waveNumber = 1
-  speedUpcount = 1050
+  speedUpcount = 1100
   waveCounter.innerHTML = `WAVE 0${waveNumber}`
 }
 
