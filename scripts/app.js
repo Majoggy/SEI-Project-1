@@ -38,6 +38,7 @@ let isGameOver = false
 let isTitleScreen = false
 let keySpam = false
 let endWave = false
+
 let waveNumber = 1
 let livesLeft = 3
 let speedUpcount = 1100
@@ -335,7 +336,6 @@ function invaderBreachCheck() {
   })
 }
 
-
 function removeInvaders() {
   invaderArray.forEach(cell => {
     if (invaderAltArray[cell.indexOf] === cell.indexOf) cells[cell].classList.remove(altInvaderClass)
@@ -454,7 +454,7 @@ function clearScreen() {
 
 function nextWaveText () {
   bannerText.innerHTML = `WAVE 0${waveNumber}`
-  bannerSubText.style.marginLeft = '370px'
+  bannerSubText.style.marginLeft = '320px'
   bannerSubText.innerHTML = 'GET READY'
   waveCounter.innerHTML = `WAVE 0${waveNumber}`
 }
