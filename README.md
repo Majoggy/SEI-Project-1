@@ -9,7 +9,7 @@ Space Invaders is a classic arcade game from the 80s. The player aims to shoot a
 
 This was my first project for General Assembly’s Software Engineering Course. It was a solo project, took 8 days, and was my first real project using JavaScript. 
 
-The app is deployed using GitHub Pages and is available here.
+The app is deployed using GitHub Pages and is available [here](https://majoggy.github.io/sei-project-1/).
 
 ## Brief 
 
