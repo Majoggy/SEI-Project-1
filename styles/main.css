@@ -11,17 +11,18 @@
 /* Starting Screen/Wave Screen/Gameover Screen */
 
 #banner-text {
-  margin-left: 150px;
-  margin-top: 420px;
   justify-content: center;
+  text-align: center;
   align-items: center;
   color: white;
   font-family: 'Space Invaders';
   display: none;
+  margin-top: 200px;
 }
 
 #banner-sub-text {
   justify-content: center;
+  text-align: center;
   align-items: center;
   color: white;
   font-family: 'Space Invaders';
@@ -38,23 +39,25 @@ body {
   justify-content: center;
   flex-direction: column;
   align-content: center;
+  height: 100vh;
   background-color:black;
   overflow: hidden;
 }
 
 .big-wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   color: black;
 }
 
 .status-bar-wrapper {
-  margin-top: 170px;
-  margin-bottom: 50px;
   display: flex;
   justify-content: space-around;
   background-color:black;
-  width: 690px;
+  width: 600px;
+  margin-bottom: 20px;
 }
 
 .game-text {
@@ -79,15 +82,15 @@ body {
   flex-wrap: wrap;
   height: 100%;
   justify-content: center;
-  height: 690px;
-  width: 690px;
+  height: 600px;
+  width: 600px;
 }
 
 .grid div {
   list-style: none;
   flex-grow: 1;
-  height: 41px;
-  width: 41px;
+  height: 37px;
+  width: 37px;
 }
 
 /* Lives remaining & Wave Counter */

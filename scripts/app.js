@@ -118,9 +118,9 @@ function setAlienArrays() {
 
 function titleScreen() {
   bannerText.innerHTML = 'SPACE INVADERS'
-  bannerText.style.marginLeft = '100px'
-  bannerSubText.style.marginLeft = '235px'
+  bannerText.style.width = '600px'
   bannerSubText.innerHTML = 'PRESS ENTER TO START'
+  bannerSubText.style.width = '600px'
 
   clearInterval(flashingText)
   flashingText = setInterval(flashingTextOff,600)
@@ -454,17 +454,14 @@ function clearScreen() {
 
 function nextWaveText () {
   bannerText.innerHTML = `WAVE 0${waveNumber}`
-  bannerSubText.style.marginLeft = '320px'
   bannerSubText.innerHTML = 'GET READY'
   waveCounter.innerHTML = `WAVE 0${waveNumber}`
 }
 
 function gameOverText () {
   bannerText.innerHTML = 'GAME OVER'
-  bannerSubText.style.marginLeft = '290px'
   if (isHighScore) {
     bannerSubText.innerHTML = `NEW HIGH SCORE OF ${score}`
-    bannerSubText.style.marginLeft = '220px'
     isHighScore = false
   } else bannerSubText.innerHTML = `YOU SCORED ${score}`
 }
